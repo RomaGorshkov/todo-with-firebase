@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "../store/storeHooks";
 import Preloader from "../components/shared/Preloader/Preloader";
+import PrivateLayout from "../layouts/PrivateLayout/PrivateLayout";
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated, user, isAuthReady } = useAppSelector(
@@ -18,7 +19,11 @@ const ProtectedRoute: React.FC = () => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Outlet />;
+  return (
+    <PrivateLayout>
+      <Outlet />
+    </PrivateLayout>
+  );
 };
 
 export default ProtectedRoute;
