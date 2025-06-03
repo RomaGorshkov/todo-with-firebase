@@ -8,6 +8,7 @@ import type { User } from "./types";
 import { auth } from "./firebase/firebaseConfig";
 import Preloader from "./components/shared/Preloader/Preloader";
 import { setAuthState } from "./store/reducers/auth";
+import { fetchUserTodos } from "./store/slices/todosSlice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ const App: React.FC = () => {
           displayName: firebaseUser.displayName ?? "",
         };
         dispatch(setAuthState(appUser));
+        dispatch(fetchUserTodos(firebaseUser.uid));
       } else {
         dispatch(setAuthState(null));
       }

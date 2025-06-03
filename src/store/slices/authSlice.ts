@@ -4,8 +4,9 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
-import { auth } from "../../firebase/firebaseConfig";
+import { auth, db } from "../../firebase/firebaseConfig";
 import type { LoginUserSchema, RegisterUserSchema, User } from "../../types";
 
 export const registerUser = createAsyncThunk<
@@ -20,16 +21,25 @@ export const registerUser = createAsyncThunk<
       password
     );
 
-    if (!auth.currentUser) {
+    const user = userCredential.user;
+
+    if (!user) {
       return thunkAPI.rejectWithValue("No current user");
     }
 
-    await updateProfile(auth.currentUser, { displayName });
+    await updateProfile(user, { displayName });
+
+    await setDoc(doc(db, "users", user.uid), {
+      id: user.uid,
+      email: user.email,
+      displayName: displayName,
+      createdAt: new Date().toISOString(),
+    });
 
     return {
-      id: userCredential.user.uid,
-      email: userCredential.user.email ?? "",
-      displayName: auth.currentUser.displayName ?? "",
+      id: user.uid,
+      email: user.email ?? "",
+      displayName: displayName,
     };
   } catch (error: unknown) {
     let errorMessage = "An unknown error occurred";
