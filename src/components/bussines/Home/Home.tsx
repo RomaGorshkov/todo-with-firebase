@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid } from "@mui/material";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 import styles from "./Home.module.scss";
 import CreateTodo from "../CreateTodo/CreateTodo";
@@ -29,44 +30,29 @@ const Home: React.FC = () => {
             description,
           }) => (
             <Grid key={id} className={styles.home__todo}>
-              <Grid
-                className={styles.home__todoInfo}
-                style={{ padding: "10px" }}
-              >
-                <div style={{ fontWeight: "bold", fontSize: "18px" }}>
-                  {text}
-                </div>
-                <div
-                  style={{
-                    fontSize: "12px",
-                    color: "#555",
-                    textAlign: "right",
-                  }}
-                >
-                  {new Date(createdAt).toLocaleString()}
-                  <br />
-                  <span style={{ fontStyle: "italic" }}>
-                    by {userDisplayName}
-                  </span>
-                </div>
+              <Grid className={styles.home__todoActions}>
+                <button>
+                  <FaEdit />
+                </button>
+                <button className="delete">
+                  <FaTrash />
+                </button>
               </Grid>
-
-              <Grid
-                className={styles.home__todoDescription}
-                style={{ padding: "0 10px 5px" }}
-              >
+              <Grid className={styles.home__todoInfo}>
+                <Grid className={styles.home__todoInfoName}>{text}</Grid>
+                <Grid className={styles.home__todoInfoMeta}>
+                  {new Date(createdAt).toLocaleString()} by {userDisplayName}
+                </Grid>
+              </Grid>
+              <Grid className={styles.home__todoDescription}>
                 {description}
               </Grid>
-
               <Grid
                 className={`${styles.home__todoStatus} ${
-                  completed ? styles.home__todoStatusCompleted : ""
+                  completed
+                    ? styles.home__todoStatusCompleted
+                    : styles.home__todoStatusNotCompleted
                 }`}
-                style={{
-                  padding: "0 10px 10px",
-                  fontWeight: "bold",
-                  color: completed ? "green" : "red",
-                }}
               >
                 {completed ? "Completed" : "Not Completed"}
               </Grid>
