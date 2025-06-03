@@ -4,6 +4,23 @@ export interface User {
   email: string;
 }
 
+export interface Todo {
+  id: string;
+  text: string;
+  description: string;
+  completed: boolean;
+  createdAt: string;
+  userId: string;
+  userDisplayName: string;
+}
+
+export interface NewTodo {
+  text: string;
+  userId: string;
+  description: string;
+  userDisplayName: string;
+}
+
 export interface RegisterUserSchema {
   displayName: string;
   email: string;
