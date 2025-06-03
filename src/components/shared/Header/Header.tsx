@@ -6,8 +6,10 @@ import { IoIosContacts } from "react-icons/io";
 import { RiTodoLine } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 
+import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
+import { logoutUser } from "../../../store/slices/authSlice";
+
 import styles from "./Header.module.scss";
-import { useAppSelector } from "../../../store/storeHooks";
 
 const headerLinks = [
   { label: "Home", to: "/", icon: <FaHome /> },
@@ -16,14 +18,23 @@ const headerLinks = [
 ];
 
 const Header: React.FC = () => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <Grid className={styles.header}>
       <Grid className={styles.header__content}>
         <Grid className={styles.header__logo}>
           <RiTodoLine className={styles.header__logoIcon} />
-          <span className={styles.header__logoText}>Todo App</span>
+          Todo App
         </Grid>
         <Grid className={styles.header__links}>
           {headerLinks.map(({ label, to, icon }) => (
@@ -36,8 +47,8 @@ const Header: React.FC = () => {
                   : styles.header__link
               }
             >
-              <span className={styles.header__linkIcon}>{icon}</span>
-              <span className={styles.header__linkText}>{label}</span>
+              {icon}
+              {label}
             </NavLink>
           ))}
         </Grid>
@@ -46,7 +57,9 @@ const Header: React.FC = () => {
           {user?.displayName}
         </Grid>
         <Grid className={styles.header__logout}>
-          <Button>Log out</Button>
+          <Button onClick={handleLogout} disabled={isLoading}>
+            {isLoading ? "Logging out..." : "Log out"}
+          </Button>
         </Grid>
       </Grid>
     </Grid>

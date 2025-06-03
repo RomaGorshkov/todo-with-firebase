@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import type { User } from "../../types";
-import { loginUser, registerUser } from "../slices/authSlice";
+import { loginUser, logoutUser, registerUser } from "../slices/authSlice";
 
 interface AuthState {
   user: User | null;
-  isAuthenticated: boolean; // Можна залишити або визначати на основі user !== null
+  isAuthenticated: boolean;
   isLoading: boolean;
-  isAuthReady: boolean; // <--- ВАЖЛИВО
+  isAuthReady: boolean;
   error: string | null;
 }
 
@@ -14,7 +15,7 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
-  isAuthReady: false, // <--- Початкове значення
+  isAuthReady: false,
   error: null,
 };
 
@@ -28,11 +29,6 @@ const authSlice = createSlice({
       state.isAuthReady = true;
       state.isLoading = false;
       state.error = null;
-    },
-
-    logoutUserSync: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
     },
     clearAuthError: (state) => {
       state.error = null;
@@ -65,10 +61,21 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error =
           typeof action.payload === "string" ? action.payload : "Login failed";
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          typeof action.payload === "string" ? action.payload : "Logout failed";
       });
   },
 });
 
-export const { setAuthState, logoutUserSync, clearAuthError } =
-  authSlice.actions;
+export const { setAuthState, clearAuthError } = authSlice.actions;
 export const authReducer = authSlice.reducer;

@@ -67,3 +67,18 @@ export const loginUser = createAsyncThunk<
     return thunkAPI.rejectWithValue(errorMessage);
   }
 });
+
+export const logoutUser = createAsyncThunk<void>(
+  "auth/logoutUser",
+  async (_, thunkAPI) => {
+    try {
+      await auth.signOut();
+    } catch (error: unknown) {
+      let errorMessage = "An unknown error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  }
+);
