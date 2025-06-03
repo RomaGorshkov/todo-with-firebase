@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
+import HomePage from "../pages/HomePage/HomePage";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -12,7 +13,7 @@ const RoutesComponent: React.FC = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<div>Main Page</div>} />
+        <Route path="/" element={<HomePage />} />
       </Route>
     </Routes>
   );

@@ -1,0 +1,87 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  padding: 10px 20px;
+  border-bottom: 2px solid #ccc;
+  position: fixed;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    display: flex;
+    font-size: 24px;
+    font-weight: bold;
+    width: 30%;
+    color: #333;
+    text-decoration: none;
+  }
+
+  &__logoIcon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 40%;
+  }
+
+  &__link {
+    display: flex;
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #007bff;
+    }
+
+    &--active {
+      color: #007bff;
+    }
+
+    svg {
+      margin-right: 8px;
+    }
+  }
+
+  &__userInfo {
+    display: flex;
+    align-items: center;
+    width: 30%;
+    justify-content: flex-end;
+    font-size: 18px;
+
+    svg {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+  }
+
+  &__logout {
+    padding: 10px;
+    button {
+      width: 100px;
+      height: 40px;
+      background-color: #ff4d4d;
+      color: white;
+
+      &:hover {
+        background-color: #be1e1e;
+      }
+    }
+  }
+}
