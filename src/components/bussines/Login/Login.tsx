@@ -1,11 +1,12 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
-import { Button, Grid, Input } from "@mui/material";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Button, Grid, Input, Typography } from "@mui/material";
 
 import type { AuthInputs } from "../../../types";
 import AuthLayout from "../../../layouts/AuthLayout/AuthLayout";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
+import { clearAuthError } from "../../../store/reducers/auth";
 import { loginUser } from "../../../store/slices/authSlice";
 
 import styles from "./Login.module.scss";
@@ -26,8 +27,28 @@ const loginInputs: AuthInputs[] = [
 ];
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector((state) => state.auth);
+  const { isLoading, error, isAuthenticated, user } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const from = location.state?.from?.pathname || "/";
+
+  React.useEffect(() => {
+    return () => {
+      if (error) {
+        dispatch(clearAuthError());
+      }
+    };
+  }, [dispatch, error, location]);
+
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, from]);
 
   const formik = useFormik({
     initialValues: {
@@ -35,14 +56,17 @@ const Login: React.FC = () => {
       password: "",
     },
     onSubmit: async (values) => {
+      if (error) {
+        dispatch(clearAuthError());
+      }
       try {
         const userPayload = {
           email: values.email,
           password: values.password,
         };
         await dispatch(loginUser(userPayload)).unwrap();
-      } catch (error) {
-        console.error("Login error:", error);
+      } catch (rejectedValueOrSerializedError) {
+        console.error("Login failed:", rejectedValueOrSerializedError);
       }
     },
   });
@@ -64,13 +88,28 @@ const Login: React.FC = () => {
               value={formik.values[name as keyof typeof formik.values]}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={
+                formik.touched[name as keyof typeof formik.values] &&
+                Boolean(formik.errors[name as keyof typeof formik.values])
+              }
               required
             />
           ))}
         </Grid>
+        {error && (
+          <Typography
+            color="error"
+            variant="body2"
+            sx={{ mt: 1, textAlign: "center" }}
+          >
+            {typeof error === "string"
+              ? error
+              : "Login failed. Please check your credentials."}
+          </Typography>
+        )}
         <Grid className={styles.loginContainer__submitGroup}>
           <Button type="submit" disabled={isLoading}>
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </Grid>
         <p className={styles.loginContainer__registerLink}>
