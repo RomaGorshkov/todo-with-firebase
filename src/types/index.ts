@@ -10,6 +10,11 @@ export interface RegisterUserSchema {
   password: string;
 }
 
+export interface LoginUserSchema {
+  email: string;
+  password: string;
+}
+
 export interface AuthInputs {
   type: string;
   id: string;

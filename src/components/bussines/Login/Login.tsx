@@ -1,24 +1,16 @@
 import React from "react";
-import { Button, Grid, Input } from "@mui/material";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
+import { Button, Grid, Input } from "@mui/material";
 
 import type { AuthInputs } from "../../../types";
 import AuthLayout from "../../../layouts/AuthLayout/AuthLayout";
-import { validationRegisterSchema } from "../../../yupSchemas/registerSchema";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
-import { FirebaseError } from "firebase/app";
-import { registerUser } from "../../../store/slices/authSlice";
+import { loginUser } from "../../../store/slices/authSlice";
 
-import styles from "./Register.module.scss";
+import styles from "./Login.module.scss";
 
-const registerInputs: AuthInputs[] = [
-  {
-    type: "text",
-    id: "displayName",
-    placeholder: "Display Name",
-    name: "displayName",
-  },
+const loginInputs: AuthInputs[] = [
   {
     type: "email",
     id: "email",
@@ -33,43 +25,36 @@ const registerInputs: AuthInputs[] = [
   },
 ];
 
-const Register: React.FC = () => {
+const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.auth);
 
   const formik = useFormik({
     initialValues: {
-      displayName: "",
       email: "",
       password: "",
     },
-    validationSchema: validationRegisterSchema,
     onSubmit: async (values) => {
       try {
         const userPayload = {
-          displayName: values.displayName,
           email: values.email,
           password: values.password,
         };
-        await dispatch(registerUser(userPayload)).unwrap();
-      } catch (error: unknown) {
-        if (error instanceof FirebaseError) {
-          console.error("Firebase error:", error.message);
-        } else {
-          console.error("Registration error:", error);
-        }
+        await dispatch(loginUser(userPayload)).unwrap();
+      } catch (error) {
+        console.error("Login error:", error);
       }
     },
   });
 
   return (
-    <AuthLayout title="Register">
+    <AuthLayout title="Login">
       <form
         onSubmit={formik.handleSubmit}
-        className={styles.registerContainer__form}
+        className={styles.loginContainer__form}
       >
-        <Grid className={styles.registerContainer__formGroup}>
-          {registerInputs.map(({ type, id, placeholder, name }) => (
+        <Grid className={styles.loginContainer__formGroup}>
+          {loginInputs.map(({ type, id, placeholder, name }) => (
             <Input
               key={id}
               type={type}
@@ -83,17 +68,17 @@ const Register: React.FC = () => {
             />
           ))}
         </Grid>
-        <Grid className={styles.registerContainer__submitGroup}>
+        <Grid className={styles.loginContainer__submitGroup}>
           <Button type="submit" disabled={isLoading}>
-            Register
+            Login
           </Button>
         </Grid>
-        <Grid className={styles.registerContainer__loginLink}>
-          Already have an account? <Link to="/login">Login</Link>
-        </Grid>
+        <p className={styles.loginContainer__registerLink}>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
       </form>
     </AuthLayout>
   );
 };
 
-export default Register;
+export default Login;

@@ -1,5 +1,4 @@
-.registerContainer {
-  width: 100%;
+.loginContainer {
   &__form {
     display: flex;
     flex-direction: column;
@@ -46,10 +45,16 @@
       &:hover {
         background-color: #164fa5;
       }
+
+      &:disabled {
+        background-color: gray;
+        color: white;
+        cursor: not-allowed;
+      }
     }
   }
 
-  &__loginLink {
+  &__registerLink {
     color: var(--color-text);
     font-size: 16px;
     margin-top: 10px;
