@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Grid, Input } from "@mui/material";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import type { AuthInputs } from "../../../types";
 import AuthLayout from "../../../layouts/AuthLayout/AuthLayout";
@@ -34,6 +34,7 @@ const registerInputs: AuthInputs[] = [
 ];
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.auth);
 
@@ -52,6 +53,7 @@ const Register: React.FC = () => {
           password: values.password,
         };
         await dispatch(registerUser(userPayload)).unwrap();
+        navigate("/");
       } catch (error: unknown) {
         if (error instanceof FirebaseError) {
           console.error("Firebase error:", error.message);
